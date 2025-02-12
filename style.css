@@ -1,0 +1,38 @@
+h1, h2 {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+hr {
+    width: 100%;
+    border: 2px solid red;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+button {
+    width: 100px;
+    padding: 0.5em;
+}
+
+#reset {
+    width: 100%;
+    align-items: center;
+}

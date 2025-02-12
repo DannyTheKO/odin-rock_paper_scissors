@@ -1,4 +1,37 @@
-function getChoices() {
+const btnChoices = document.querySelector('#btnChoices')
+const btnReset = document.querySelector('#btnReset')
+
+const gameLog = document.querySelector('#gameLog')
+const gameResult = document.querySelector('#gameResult')
+const gameLimit = document.querySelector('#gameLimit')
+const gameAnnouncer = document.querySelector('#gameAnnouncer')
+const gameStatus = document.querySelector('#gameStatus')
+
+let roundCount = 1;
+let roundStatus = "Tie";
+let pScore = 0;
+let cScore = 0;
+
+// Play
+btnChoices.addEventListener('click', (e) => {
+
+    if (pScore == 5 || cScore == 5) {
+       gameReset()
+    } else if (e.target.id !== btnChoices.id) {
+        let pChoices = e.target.textContent;
+        game(getChoice(), pChoices, match);
+    }
+
+    // console.log(`Player: ${pScore}, Computer: ${cScore}`)
+})
+
+// Reset
+btnReset.addEventListener('click', (e) => {
+    gameReset()
+})
+
+// Computer Choice
+function getChoice() {
     // create a list array of computer choices
     const options = ['Rock', 'Paper', 'Scissors']
     // getting the computer choices by using math.floor function
@@ -7,40 +40,31 @@ function getChoices() {
     return options[Choices];
 }
 
-// returns the computer choices
-// let ComputerSelection = getComputerChoices();
-// console.log(ComputerSelection)
-
-// player choices
-// let PlayerSelection = "ROCK"
-// console.log(PlayerSelection)
-
 // create a function call "match" that has parameters of "ComputerSelection" and "PlayerSelection"
 function match(ComputerChoices, PlayerSelection) {
     // turn both string into a lowercase string
     const player = PlayerSelection.toLowerCase();
     const computer = ComputerChoices.toLowerCase();
-    const validOptions = ['rock', 'paper', 'scissors']
 
-    // Check if player input is valid
-    if (!validOptions.includes(player)) {
-        return "Please choose Rock, Paper or Scissors";
-    }
     // if condition of both player equal, then tie
-    else if (player === computer) {
-        return "It's a tie ! both chose " + PlayerSelection;
+    if (player === computer) {
+        roundStatus = "Tie";
+        return "It's a tie! both choose " + PlayerSelection;
     }
     // if both player are different condition, then the player win
     else if (
         (player === 'rock' && computer === 'scissors') ||
-        (player ==='scissors' && computer === 'paper') ||
+        (player === 'scissors' && computer === 'paper') ||
         (player === 'paper' && computer === 'rock')
     ) {
-        return "You win! you chose " + PlayerSelection;
-    } 
-    // else, the player lose
+        pScore++;
+        roundStatus = "Win"
+        return "You win! you choose " + PlayerSelection;
+    }
     else {
-        return "You lose! you chose " + PlayerSelection;
+        cScore++;
+        roundStatus = "Lose"
+        return "You lose! you choose " + PlayerSelection;
     }
 }
 
@@ -48,36 +72,51 @@ function match(ComputerChoices, PlayerSelection) {
 // const result = match(ComputerSelection, PlayerSelection);
 // console.log(match(ComputerSelection,PlayerSelection));
 
-function game() {
-    // For loop a match 5 times
-    let round = 1;
-    for (let i = 0; i < 5; i++) {
-        // Get Choice 
-        let ComputerSelection = getChoices();
-        let PlayerSelection = prompt("Please Choose Rock Paper Scissors");
-        
-        console.log("================================")
-        console.log("Round "+ round)
-        // Player Selection
-        console.log("Player Choose: " + PlayerSelection);
-        // Computer Selection
-        console.log("Computer Choose: " + ComputerSelection);
+function game(computer, player, callback) {
+    let round = callback(computer, player);
+    let color = "none"
+    if (roundStatus === "Tie") {
+        color = 'yellow';
+    } else if (roundStatus === "Win") {
+        color = "lightgreen";
+    } else {
+        color = "red";
+    }
+    gameResult.textContent = round;
+    gameResult.style.backgroundColor = color;
 
-        // Match Result
-        console.log(match(ComputerSelection,PlayerSelection));
+    const list = document.createElement('li')
+    list.textContent = `Round ${roundCount}: ${round}`;
+    list.style.backgroundColor = color;
 
+    gameLog.appendChild(list)
 
-        // Alert box result of that match
-        alert ("Round " + round + "\n" +
-               "================================" + "\n" +
-               "Player Selected: " + PlayerSelection + "\n" +
-               "Computer Selected: " + ComputerSelection + "\n" +
-               "================================" + "\n" +
-               match(ComputerSelection,PlayerSelection))
+    gameLimit.textContent = `${roundCount}`
+    gameStatus.textContent = `Player: ${pScore}, Computer: ${cScore}`
 
-        round++;
-        // console.log("================================")
+    roundCount++;
+
+    if (cScore === 5) {
+        gameAnnouncer.style.backgroundColor = "red";
+        gameAnnouncer.textContent = "Computer Win, Try Again!";
+    } else if (pScore === 5) {
+        gameAnnouncer.style.backgroundColor = "lightgreen";
+        gameAnnouncer.textContent = "Player Win, Congrats!";
     }
 }
-console.log(game());
-console.log("Games Ended");
+
+function gameReset() {
+    roundCount = 1;
+    pScore = 0;
+    cScore = 0;
+
+    gameLog.innerHTML = '';
+    gameStatus.textContent = `Player ${pScore}, Computer ${pScore}`;
+    gameResult.innerHTML = `Game Reset!`;
+    gameResult.style.backgroundColor = 'cyan';
+    gameAnnouncer.textContent = ``;
+    gameLimit.textContent = `0`;
+}
+
+// game()
+// console.log("Games Ended");
