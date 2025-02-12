@@ -117,6 +117,3 @@ function gameReset() {
     gameAnnouncer.textContent = ``;
     gameLimit.textContent = `0`;
 }
-
-// game()
-// console.log("Games Ended");
